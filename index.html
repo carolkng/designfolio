@@ -1,0 +1,70 @@
+<html>
+
+<head>
+    <title>My first Three.js app</title>
+    <style>
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding 0;
+        }
+
+    </style>
+</head>
+
+<body>
+    <script src="js/three.min.js"></script>
+    <script src="js/Detector.js"></script>
+    <script src="js/ColladaLoader.js"></script>
+    <script>
+        var scene, camera, renderer, model;
+        function render() {
+            //call to render scene 60fps
+            requestAnimationFrame(render);
+            camera.lookAt(scene.position);
+
+            //keep displaying scene
+            renderer.render(scene, camera);
+        }
+        function init() {
+            //add detector to see if WebGL is supported
+            if (!Detector.webgl) Detector.addGetWebGLMessage();
+            //set up a scene
+            scene = new THREE.Scene();
+            //add a camera
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            //render the scene - start renderer and set it's size
+            renderer = new THREE.WebGLRenderer({
+                antialias: true
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            var loader = new THREE.ColladaLoader();
+            loader.options.convertUpAxis = true;
+            loader.load('ISLAND_ROUGH.dae', function colladaReady(collada){
+                
+                var dae = collada.scene;
+                    
+                dae.scale.x = dae.scale.y = dae.scale.z = 0.5;    //scaling the model down( 0.5 is half the size)
+                dae.updateMatrix();
+                scene.add(dae)
+
+                render();
+                
+            });
+
+            //position camera
+            camera.position.set(300, 100, 1);
+            //render the scene
+           //render();
+        }
+
+        //call the init function to run the code
+        init();
+
+    </script>
+</body>
+
+</html>
